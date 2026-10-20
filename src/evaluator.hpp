@@ -5,7 +5,8 @@
 #include <atomic>
 #include <span>
 
-namespace mu {
+namespace mu
+{
 
 // Set (e.g. from a SIGINT handler) to abort a running evaluation; the
 // evaluator then throws a RuntimeError and resets the flag.

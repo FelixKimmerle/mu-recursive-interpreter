@@ -8,7 +8,8 @@
 #include <variant>
 #include <vector>
 
-namespace mu {
+namespace mu
+{
 
 // Named functions defined so far. Names are resolved while parsing, so a
 // definition can only refer to functions defined before it (no general
@@ -16,34 +17,39 @@ namespace mu {
 using Environment = std::unordered_map<std::string, FunctionPtr>;
 
 // name = expr;
-struct Definition {
+struct Definition
+{
     std::string name;
     FunctionPtr function;
 };
 
 // expr(n_1, ..., n_k);
-struct Evaluation {
+struct Evaluation
+{
     std::string text;
     FunctionPtr function;
     std::vector<Nat> arguments;
 };
 
 // expr;
-struct Signature {
+struct Signature
+{
     std::string text;
     FunctionPtr function;
 };
 
 // import "file.pr";
-struct Import {
+struct Import
+{
     std::string path;
     SourceLocation location;
 };
 
 using Statement = std::variant<Definition, Evaluation, Signature, Import>;
 
-class Parser {
-public:
+class Parser
+{
+  public:
     Parser(std::vector<Token> tokens, const Environment& environment);
 
     bool atEnd() const;
@@ -55,7 +61,7 @@ public:
     // Skips the rest of the current (broken) statement.
     void synchronize();
 
-private:
+  private:
     FunctionPtr expression();
     FunctionPtr postfix();
     FunctionPtr primary();

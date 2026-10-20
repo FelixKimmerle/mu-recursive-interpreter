@@ -2,27 +2,43 @@
 
 #include <unordered_map>
 
-namespace mu {
+namespace mu
+{
 
-namespace {
+namespace
+{
 
-bool isDigit(char c) { return c >= '0' && c <= '9'; }
+bool isDigit(char c)
+{
+    return c >= '0' && c <= '9';
+}
 
-bool isIdentifierStart(char c) {
+bool isIdentifierStart(char c)
+{
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
 }
 
-bool isIdentifierPart(char c) { return isIdentifierStart(c) || isDigit(c); }
+bool isIdentifierPart(char c)
+{
+    return isIdentifierStart(c) || isDigit(c);
+}
 
-class Lexer {
-public:
-    Lexer(std::string_view source, std::size_t firstLine) : source_(source) { location_.line = firstLine; }
+class Lexer
+{
+  public:
+    Lexer(std::string_view source, std::size_t firstLine) : source_(source)
+    {
+        location_.line = firstLine;
+    }
 
-    std::vector<Token> run() {
-        while (true) {
+    std::vector<Token> run()
+    {
+        while (true)
+        {
             skipWhitespaceAndComments();
             start_ = location_;
-            if (atEnd()) {
+            if (atEnd())
+            {
                 break;
             }
             scanToken();
@@ -31,77 +47,107 @@ public:
         return std::move(tokens_);
     }
 
-private:
-    bool atEnd() const { return pos_ >= source_.size(); }
+  private:
+    bool atEnd() const
+    {
+        return pos_ >= source_.size();
+    }
 
-    char peek(std::size_t ahead = 0) const {
+    char peek(std::size_t ahead = 0) const
+    {
         return pos_ + ahead < source_.size() ? source_[pos_ + ahead] : '\0';
     }
 
-    char advance() {
+    char advance()
+    {
         char c = source_[pos_++];
-        if (c == '\n') {
+        if (c == '\n')
+        {
             ++location_.line;
             location_.column = 1;
-        } else {
+        }
+        else
+        {
             ++location_.column;
         }
         return c;
     }
 
-    void add(TokenKind kind, std::string text) {
+    void add(TokenKind kind, std::string text)
+    {
         tokens_.push_back({kind, std::move(text), start_});
     }
 
-    void skipWhitespaceAndComments() {
-        while (!atEnd()) {
+    void skipWhitespaceAndComments()
+    {
+        while (!atEnd())
+        {
             char c = peek();
-            if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+            if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+            {
                 advance();
-            } else if (c == '/' && peek(1) == '/') {
-                while (!atEnd() && peek() != '\n') {
+            }
+            else if (c == '/' && peek(1) == '/')
+            {
+                while (!atEnd() && peek() != '\n')
+                {
                     advance();
                 }
-            } else if (c == '/' && peek(1) == '*') {
+            }
+            else if (c == '/' && peek(1) == '*')
+            {
                 skipBlockComment();
-            } else {
+            }
+            else
+            {
                 return;
             }
         }
     }
 
     // Block comments nest: /* a /* b */ c */ is a single comment.
-    void skipBlockComment() {
+    void skipBlockComment()
+    {
         SourceLocation opened = location_;
         advance();
         advance();
         int depth = 1;
-        while (depth > 0) {
-            if (atEnd()) {
+        while (depth > 0)
+        {
+            if (atEnd())
+            {
                 tokens_.push_back({TokenKind::Invalid, "unterminated block comment", opened});
                 return;
             }
-            if (peek() == '/' && peek(1) == '*') {
+            if (peek() == '/' && peek(1) == '*')
+            {
                 advance();
                 advance();
                 ++depth;
-            } else if (peek() == '*' && peek(1) == '/') {
+            }
+            else if (peek() == '*' && peek(1) == '/')
+            {
                 advance();
                 advance();
                 --depth;
-            } else {
+            }
+            else
+            {
                 advance();
             }
         }
     }
 
     // A string literal on a single line, without escape sequences.
-    void string() {
+    void string()
+    {
         std::size_t begin = pos_;
-        while (!atEnd() && peek() != '"' && peek() != '\n') {
+        while (!atEnd() && peek() != '"' && peek() != '\n')
+        {
             advance();
         }
-        if (peek() != '"') {
+        if (peek() != '"')
+        {
             add(TokenKind::Invalid, "unterminated string");
             return;
         }
@@ -109,38 +155,56 @@ private:
         advance();
     }
 
-    void scanToken() {
+    void scanToken()
+    {
         char c = advance();
-        switch (c) {
-        case '(': add(TokenKind::LeftParen, "("); return;
-        case ')': add(TokenKind::RightParen, ")"); return;
-        case ',': add(TokenKind::Comma, ","); return;
-        case ';': add(TokenKind::Semicolon, ";"); return;
-        case '=': add(TokenKind::Equal, "="); return;
-        case '|': add(TokenKind::Mu, "|"); return;
-        case '"': string(); return;
-        default: break;
+        switch (c)
+        {
+        case '(':
+            add(TokenKind::LeftParen, "(");
+            return;
+        case ')':
+            add(TokenKind::RightParen, ")");
+            return;
+        case ',':
+            add(TokenKind::Comma, ",");
+            return;
+        case ';':
+            add(TokenKind::Semicolon, ";");
+            return;
+        case '=':
+            add(TokenKind::Equal, "=");
+            return;
+        case '|':
+            add(TokenKind::Mu, "|");
+            return;
+        case '"':
+            string();
+            return;
+        default:
+            break;
         }
 
-        if (isDigit(c)) {
+        if (isDigit(c))
+        {
             std::size_t begin = pos_ - 1;
-            while (isDigit(peek())) {
+            while (isDigit(peek()))
+            {
                 advance();
             }
             add(TokenKind::Number, std::string(source_.substr(begin, pos_ - begin)));
             return;
         }
 
-        if (isIdentifierStart(c)) {
+        if (isIdentifierStart(c))
+        {
             static const std::unordered_map<std::string_view, TokenKind> keywords = {
-                {"s", TokenKind::Successor},
-                {"c", TokenKind::Constant},
-                {"pi", TokenKind::Projection},
-                {"rec", TokenKind::Recursion},
-                {"import", TokenKind::Import},
+                {"s", TokenKind::Successor},   {"c", TokenKind::Constant},    {"pi", TokenKind::Projection},
+                {"rec", TokenKind::Recursion}, {"import", TokenKind::Import},
             };
             std::size_t begin = pos_ - 1;
-            while (isIdentifierPart(peek())) {
+            while (isIdentifierPart(peek()))
+            {
                 advance();
             }
             std::string_view word = source_.substr(begin, pos_ - begin);
@@ -161,28 +225,47 @@ private:
 
 } // namespace
 
-std::vector<Token> tokenize(std::string_view source, std::size_t firstLine) {
+std::vector<Token> tokenize(std::string_view source, std::size_t firstLine)
+{
     return Lexer(source, firstLine).run();
 }
 
-std::string describe(TokenKind kind) {
-    switch (kind) {
-    case TokenKind::LeftParen: return "'('";
-    case TokenKind::RightParen: return "')'";
-    case TokenKind::Comma: return "','";
-    case TokenKind::Semicolon: return "';'";
-    case TokenKind::Equal: return "'='";
-    case TokenKind::Mu: return "'|'";
-    case TokenKind::Successor: return "'s'";
-    case TokenKind::Constant: return "'c'";
-    case TokenKind::Projection: return "'pi'";
-    case TokenKind::Recursion: return "'rec'";
-    case TokenKind::Import: return "'import'";
-    case TokenKind::Identifier: return "identifier";
-    case TokenKind::Number: return "number";
-    case TokenKind::String: return "string";
-    case TokenKind::Invalid: return "invalid token";
-    case TokenKind::End: return "end of input";
+std::string describe(TokenKind kind)
+{
+    switch (kind)
+    {
+    case TokenKind::LeftParen:
+        return "'('";
+    case TokenKind::RightParen:
+        return "')'";
+    case TokenKind::Comma:
+        return "','";
+    case TokenKind::Semicolon:
+        return "';'";
+    case TokenKind::Equal:
+        return "'='";
+    case TokenKind::Mu:
+        return "'|'";
+    case TokenKind::Successor:
+        return "'s'";
+    case TokenKind::Constant:
+        return "'c'";
+    case TokenKind::Projection:
+        return "'pi'";
+    case TokenKind::Recursion:
+        return "'rec'";
+    case TokenKind::Import:
+        return "'import'";
+    case TokenKind::Identifier:
+        return "identifier";
+    case TokenKind::Number:
+        return "number";
+    case TokenKind::String:
+        return "string";
+    case TokenKind::Invalid:
+        return "invalid token";
+    case TokenKind::End:
+        return "end of input";
     }
     return "token";
 }

@@ -7,17 +7,20 @@
 #include <set>
 #include <string_view>
 
-namespace mu {
+namespace mu
+{
 
-struct Options {
+struct Options
+{
     // Print only the value of an evaluation instead of "expr(args) = value".
     bool quiet = false;
 };
 
 // Runs programs statement by statement. Definitions persist across calls
 // to run(), so several files (or REPL inputs) share one environment.
-class Interpreter {
-public:
+class Interpreter
+{
+  public:
     Interpreter(std::ostream& out, std::ostream& err, Options options = {});
 
     // Returns false if any statement failed. Errors are reported to `err`
@@ -29,7 +32,7 @@ public:
     // Each file is loaded at most once, later imports of it are skipped.
     bool runFile(const std::filesystem::path& path);
 
-private:
+  private:
     bool run(std::string_view source, std::string_view sourceName, std::size_t firstLine,
              const std::filesystem::path& directory);
     bool execute(const Statement& statement, const std::filesystem::path& directory);

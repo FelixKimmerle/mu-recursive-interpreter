@@ -6,9 +6,11 @@
 #include <string_view>
 #include <vector>
 
-namespace mu {
+namespace mu
+{
 
-enum class TokenKind {
+enum class TokenKind
+{
     LeftParen,
     RightParen,
     Comma,
@@ -22,12 +24,13 @@ enum class TokenKind {
     Import,     // 'import'
     Identifier,
     Number,
-    String, // "...", `text` holds the contents without quotes
+    String,  // "...", `text` holds the contents without quotes
     Invalid, // lexical error, `text` holds the message
     End,
 };
 
-struct Token {
+struct Token
+{
     TokenKind kind;
     std::string text;
     SourceLocation location;
