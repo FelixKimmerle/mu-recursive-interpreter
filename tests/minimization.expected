@@ -1,0 +1,18 @@
+|g(17, 5) = 3
+mu_div(17, 5) = 3
+mu_div(20, 5) = 4
+mu_div(4, 5) = 0
+isqrt(16) = 4
+isqrt(17) = 4
+isqrt(99) = 9
+log2(1) = 0
+log2(8) = 3
+log2(1000) = 9
+gcd(12, 18) = 6
+gcd(7, 5) = 1
+gcd(0, 9) = 9
+prime(13) = 1
+prime(15) = 0
+next_prime(20) = 23
+next_prime(23) = 29
+nowhere : N -> N

@@ -1,0 +1,12 @@
+decrement = rec(c(0,0),pi(2,2));
+sub = rec(pi(1,1),decrement(pi(3,1)))(pi(2,2),pi(2,1));
+add = rec(pi(1,1),s(pi(3,1)));
+mult = rec(c(1,0),add(pi(3,1),pi(3,3)));
+
+
+
+
+
+
+mu = sub(mult(pi(3,2),pi(3,3)),pi(3,1));
+|mu(3,4);

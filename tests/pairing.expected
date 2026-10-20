@@ -1,0 +1,15 @@
+pair(0, 0) = 0
+pair(0, 1) = 1
+pair(1, 0) = 2
+pair(3, 4) = 31
+unpair1(31) = 3
+unpair2(31) = 4
+pair(unpair1, unpair2)(31) = 31
+pair3(1, 2, 3) = 172
+second(172) = 2
+third(172) = 3
+fib(0) = 0
+fib(1) = 1
+fib(2) = 1
+fib(7) = 13
+fib(8) = 21

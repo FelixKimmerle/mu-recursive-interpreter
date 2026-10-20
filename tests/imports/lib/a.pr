@@ -1,0 +1,2 @@
+import "b.pr";          // cycle a -> b -> a is fine
+one = s(c(1, 0));

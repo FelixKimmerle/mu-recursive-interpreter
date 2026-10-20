@@ -1,0 +1,13 @@
+s(41) = 42
+c(3, 7)(1, 2, 3) = 7
+c(0, 5)() = 5
+pi(3, 2)(10, 20, 30) = 20
+plus_two(5) = 7
+swap_first(8, 9) = 8
+add(5, 7) = 12
+pred(10) = 9
+pred(0) = 0
+|monus_rev(9) = 9
+add : N^2 -> N
+|monus_rev : N -> N
+rec(add, pi(4, 1)) : N^3 -> N

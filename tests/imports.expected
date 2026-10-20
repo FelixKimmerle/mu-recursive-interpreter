@@ -1,0 +1,5 @@
+two(0) = 2
+three(0) = 3
+imports/main.pr:7:1: error: cannot open 'imports/missing.pr'
+imports/main.pr:8:8: error: expected string after 'import', found 'missing'
+three(1) = 3

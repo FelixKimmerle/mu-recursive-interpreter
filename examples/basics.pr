@@ -1,0 +1,42 @@
+// The five building blocks of mu-recursive functions.
+// Run with:  mu-interp examples/basics.pr
+
+// --- Successor:  s(x) = x + 1 -------------------------------------------
+s(41);
+
+// --- Constants:  c(k, n)(x_1, ..., x_k) = n ------------------------------
+c(3, 7)(1, 2, 3);
+c(0, 5)();              // a 0-ary constant is just a number
+
+// --- Projections:  pi(k, i)(x_1, ..., x_k) = x_i -------------------------
+pi(3, 2)(10, 20, 30);
+
+// --- Composition:  f(g_1, ..., g_m)(x) = f(g_1(x), ..., g_m(x)) ----------
+plus_two = s(s(pi(1, 1)));
+plus_two(5);
+swap_first = pi(2, 2)(pi(2, 2), pi(2, 1));   // = pi(2, 1)
+swap_first(8, 9);
+
+// --- Primitive recursion -------------------------------------------------
+//   rec(g, h)(0,   x) = g(x)
+//   rec(g, h)(n+1, x) = h(rec(g, h)(n, x), n, x)
+//
+// Addition: add(0, x) = x,  add(n+1, x) = s(add(n, x))
+add = rec(pi(1, 1), s(pi(3, 1)));
+add(5, 7);
+
+// Predecessor: pred(0) = 0,  pred(n+1) = n
+pred = rec(c(0, 0), pi(2, 2));
+pred(10);
+pred(0);
+
+// --- Minimization:  |f(x) = min { n | f(n, x) = 0 } ----------------------
+// Find the smallest n with  x - n = 0  (modified subtraction), i.e. n = x.
+monus_rev = rec(pi(1, 1), pred(pi(3, 1)));    // monus_rev(n, x) = x -' n
+|monus_rev(9);
+
+// --- Signatures ----------------------------------------------------------
+// An expression followed directly by ';' prints its arity.
+add;
+|monus_rev;
+rec(add, pi(4, 1));

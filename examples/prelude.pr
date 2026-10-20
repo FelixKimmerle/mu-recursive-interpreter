@@ -1,0 +1,81 @@
+// A small library of primitive recursive functions.
+// Only definitions, no output. Other programs load it with
+//
+//     import "prelude.pr";
+//
+// Conventions: all values are natural numbers, predicates return 1 for
+// "true" and 0 for "false", and x -' y denotes modified subtraction
+// (max(x - y, 0)).
+
+// ---------------------------------------------------------------- arithmetic
+
+id   = pi(1, 1);
+zero = c(1, 0);
+
+// pred(0) = 0, pred(n+1) = n
+pred = rec(c(0, 0), pi(2, 2));
+
+// add(0, x) = x, add(n+1, x) = add(n, x) + 1
+add = rec(pi(1, 1), s(pi(3, 1)));
+
+// monus_rev(n, x) = x -' n: start with x and decrement n times
+monus_rev = rec(pi(1, 1), pred(pi(3, 1)));
+sub = monus_rev(pi(2, 2), pi(2, 1));                     // sub(x, y) = x -' y
+
+// mult(0, x) = 0, mult(n+1, x) = x + mult(n, x)
+// (add recurses on its first argument, so x goes first: x stays small
+// while the accumulator grows)
+mult = rec(c(1, 0), add(pi(3, 3), pi(3, 1)));
+
+// power(n, x) = x^n, pow(x, n) = x^n
+power = rec(c(1, 1), mult(pi(3, 1), pi(3, 3)));
+pow = power(pi(2, 2), pi(2, 1));
+
+// fact(0) = 1, fact(n+1) = (n+1) * fact(n)
+fact = rec(c(0, 1), mult(s(pi(2, 2)), pi(2, 1)));
+
+// binom2(n) = n(n-1)/2:  binom2(0) = 0, binom2(n+1) = n + binom2(n)
+binom2 = rec(c(0, 0), add(pi(2, 2), pi(2, 1)));
+
+// absdiff(x, y) = |x - y|
+absdiff = add(sub(pi(2, 1), pi(2, 2)), sub(pi(2, 2), pi(2, 1)));
+
+// ---------------------------------------------------------------- predicates
+
+// sg(0) = 0, sg(n+1) = 1        nsg(0) = 1, nsg(n+1) = 0
+sg  = rec(c(0, 0), c(2, 1));
+nsg = rec(c(0, 1), c(2, 0));
+
+not = nsg;
+and = mult(sg(pi(2, 1)), sg(pi(2, 2)));
+or  = sg(add(pi(2, 1), pi(2, 2)));
+
+leq = nsg(sub(pi(2, 1), pi(2, 2)));                      // x <= y  iff  x -' y = 0
+lt  = leq(s(pi(2, 1)), pi(2, 2));                        // x <  y  iff  x+1 <= y
+geq = leq(pi(2, 2), pi(2, 1));
+gt  = lt(pi(2, 2), pi(2, 1));
+eq  = nsg(absdiff);
+neq = sg(absdiff);
+
+// ------------------------------------------------------------------- control
+
+// cond(b, x, y) = x if b != 0, otherwise y   (recursion on b, no real loop)
+cond = rec(pi(2, 2), pi(4, 3));
+
+max = add(sub(pi(2, 1), pi(2, 2)), pi(2, 2));            // (x -' y) + y
+min = sub(pi(2, 1), sub(pi(2, 1), pi(2, 2)));            // x -' (x -' y)
+
+// ---------------------------------------------------- division (primitive)
+
+// mod(0, y) = 0, mod(x+1, y) = 0 if mod(x, y) + 1 = y, else mod(x, y) + 1
+// Convention: mod(x, 0) = x.
+mod_step = cond(neq(s(pi(3, 1)), pi(3, 3)), s(pi(3, 1)), c(3, 0));
+mod = rec(c(1, 0), mod_step);
+
+// div(x, y) counts the k in 1..x with k*y <= x  (a bounded search, so this
+// is primitive recursive and total). Convention: div(x, 0) = x.
+div_count = rec(c(2, 0), add(pi(4, 1), leq(mult(s(pi(4, 2)), pi(4, 4)), pi(4, 3))));
+div = div_count(pi(2, 1), pi(2, 1), pi(2, 2));
+
+// divides(d, n) = 1 iff d | n
+divides = nsg(mod(pi(2, 2), pi(2, 1)));

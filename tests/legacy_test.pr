@@ -1,0 +1,42 @@
+add = rec(pi(1,1),s(pi(3,1)));
+add(5,7);
+
+zero = rec(c(0,1),c(2,0));
+zero(0);
+zero(5);
+
+decrement = rec(c(0,0),pi(2,2));
+decrement(6);
+decrement(100);
+
+sub = rec(pi(1,1),decrement(pi(3,1)))(pi(2,2),pi(2,1));
+sub(12,5);
+sub(77,4);
+
+leq = zero(sub(pi(2,1),pi(2,2)));
+leq(4,5);
+leq(5,4);
+
+mult = rec(c(1,0),add(pi(3,1),pi(3,3)));
+eq = mult(leq(pi(2,1),pi(2,2)),leq(pi(2,2),pi(2,1)));
+eq(8,8);
+eq(8,7);
+eq(0,1);
+eq(0,0);
+
+ifzero = rec(pi(2,1),pi(4,4));
+ifzero(0,5,9);
+ifzero(1,5,9);
+ifzero(2,5,9);
+ifzero(2,88,2);
+
+max = add(sub(pi(2,1),pi(2,2)),pi(2,2));
+max(9,5);
+max(5,9);
+
+delta = rec(c(0,0),add(pi(2,1),s(pi(2,2))));
+delta(6);
+delta(9);
+delta(12);
+
+

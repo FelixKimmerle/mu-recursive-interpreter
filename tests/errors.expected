@@ -1,0 +1,16 @@
+errors.pr:2:1: error: 'add' expects 2 arguments, got 1
+errors.pr:3:1: error: 'add' expects 2 arguments, got 3
+errors.pr:4:7: error: projection index must satisfy 1 <= i <= k, but pi(2, 3)
+errors.pr:5:7: error: projection index must satisfy 1 <= i <= k, but pi(0, 0)
+errors.pr:6:15: error: in rec(g, h), h must take 2 more arguments than g: g has arity 1, so h needs arity 3, but has arity 2
+errors.pr:7:4: error: 'add' expects 2 arguments, but is composed with 1 function
+errors.pr:8:15: error: all functions in a composition must have the same arity: argument 1 has arity 2, argument 2 has arity 3
+errors.pr:9:1: error: unknown function 'unknown'
+errors.pr:10:1: error: the mu operator needs a function with at least one argument
+errors.pr:11:8: error: expected number as argument (only numbers can be passed when evaluating), found 'x'
+errors.pr:12:1: error: cannot redefine built-in 's'
+errors.pr: runtime error: s(18446744073709551615): overflow: result exceeds 18446744073709551615
+errors.pr:14:5: error: number 18446744073709551616 is too large (maximum is 18446744073709551615)
+errors.pr:15:11: error: unexpected character '$'
+errors.pr:16:7: error: expected ')' after c(k, n), found ';'
+s(0) = 1

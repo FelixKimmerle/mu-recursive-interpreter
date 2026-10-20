@@ -1,0 +1,39 @@
+// Cases that the original Java implementation got wrong.
+
+add = rec(pi(1, 1), s(pi(3, 1)));
+sub = rec(pi(1, 1), rec(c(0, 0), pi(2, 2))(pi(3, 1)))(pi(2, 2), pi(2, 1));
+mult = rec(c(1, 0), add(pi(3, 3), pi(3, 1)));
+g = sub(pi(3, 2), mult(s(pi(3, 1)), pi(3, 3)));
+
+// mu used to push its search variable onto the caller's argument list
+// without removing it, so later arguments of a composition were shifted.
+t = add(|g, pi(2, 1));
+t(17, 5);               // 3 + 17
+u = add(|g, |g);
+u(17, 5);               // 3 + 3
+
+// Nested mu: least n with (least m with m >= n) >= 4, i.e. n = 4
+inner = |sub(pi(2, 2), pi(2, 1));
+outer = |sub(c(1, 4), inner);
+outer();
+
+// The successor can be used as a function on its own and applied to numbers.
+s(5);
+inc = s;
+inc(inc)(1);
+rec(c(0, 3), s(pi(2, 1)))(4);
+
+// The same statement evaluated twice gives the same result.
+t(17, 5);
+t(17, 5);
+
+// Grouping with parentheses: compose after applying mu
+(|g)(pi(2, 2), pi(2, 1))(5, 17);
+
+// Values beyond 32 bits
+add(3, 18446744073709551612);
+c(0, 18446744073709551615)();
+
+/* nested /* block */ comments */ s(0);
+// line comment with //* tricky */ characters
+s(1);

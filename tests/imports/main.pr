@@ -1,0 +1,9 @@
+// Imports resolve relative to the importing file and load each file once.
+import "lib/a.pr";
+import "lib/b.pr";      // b imports a again: skipped
+import "./lib/a.pr";    // same file, different spelling: skipped
+two(0);
+three(0);
+import "missing.pr";
+import missing;
+three(1);

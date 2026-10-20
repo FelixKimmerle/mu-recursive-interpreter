@@ -1,0 +1,3 @@
+import "a.pr";
+two = s(s(c(1, 0)));
+three = s(two);

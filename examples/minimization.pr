@@ -1,0 +1,64 @@
+// The mu operator:  |f(x) = min { n | f(n, x) = 0 }
+// Run with:  mu-interp examples/minimization.pr
+
+import "prelude.pr";
+
+// --- The example from the lecture (TI2, unit 11) --------------------------
+// g(x, y, z) = md(y, mult(s(x), z)),  md = modified difference.
+// g(0,17,5) = 12, g(1,17,5) = 7, g(2,17,5) = 2, g(3,17,5) = 0
+g = sub(pi(3, 2), mult(s(pi(3, 1)), pi(3, 3)));
+|g(17, 5);
+
+// --- Integer division as an inverse ---------------------------------------
+// x div y = the least n with (n+1) * y > x.
+// The predicate is 1 ("keep searching") as long as (n+1) * y <= x.
+mu_div = |leq(mult(s(pi(3, 1)), pi(3, 3)), pi(3, 2));
+mu_div(17, 5);
+mu_div(20, 5);
+mu_div(4, 5);
+// mu_div(7, 0) is UNDEFINED: (n+1) * 0 > 7 never holds, the search runs
+// forever. This is what makes mu-recursive functions partial.
+// (The prelude's `div` uses a bounded search instead and is total.)
+
+// --- Integer square root and logarithm ------------------------------------
+// isqrt(x) = least n with (n+1)^2 > x
+square = mult(id, id);
+isqrt = |leq(square(s(pi(2, 1))), pi(2, 2));
+isqrt(16);
+isqrt(17);
+isqrt(99);
+
+// log2(x) = least n with 2^(n+1) > x      (log2(0) = 0 by this definition)
+log2 = |leq(pow(c(2, 2), s(pi(2, 1))), pi(2, 2));
+log2(1);
+log2(8);
+log2(1000);
+
+// --- Greatest common divisor ----------------------------------------------
+// Search downwards: the least k such that d = (x+y) -' k divides both x
+// and y gives the greatest common divisor d.
+gcd_miss = or(mod(pi(3, 2), sub(add(pi(3, 2), pi(3, 3)), pi(3, 1))),
+              mod(pi(3, 3), sub(add(pi(3, 2), pi(3, 3)), pi(3, 1))));
+gcd = sub(add(pi(2, 1), pi(2, 2)), |gcd_miss);
+gcd(12, 18);
+gcd(7, 5);
+gcd(0, 9);
+
+// --- Primes ---------------------------------------------------------------
+// count_div(k, n) = number of d in 1..k with d | n
+count_div = rec(c(1, 0), add(pi(3, 1), divides(s(pi(3, 2)), pi(3, 3))));
+prime = eq(count_div(id, id), c(1, 2));
+prime(13);
+prime(15);
+
+// next_prime(x) = least n with n > x and n prime. It is total (there are
+// infinitely many primes), even though it is written with an unbounded mu.
+next_prime = |not(and(gt(pi(2, 1), pi(2, 2)), prime(pi(2, 1))));
+next_prime(20);
+next_prime(23);
+
+// --- A nowhere defined function (lecture example) --------------------------
+// f(x, y) = 2 is never 0, so |f is undefined everywhere. We only look at
+// its signature; evaluating it would never terminate.
+nowhere = |c(2, 2);
+nowhere;

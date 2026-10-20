@@ -1,0 +1,50 @@
+// Cantor's pairing function N^2 -> N and its inverses (TI2, unit 10).
+// Run with:  mu-interp examples/pairing.pr
+
+import "prelude.pr";
+
+// pair(x, y) = binom(x + y + 1, 2) + x
+//
+//    y\x  0  1  2  3
+//     0   0  2  5  9
+//     1   1  4  8
+//     2   3  7
+//     3   6
+pair = add(binom2(s(add(pi(2, 1), pi(2, 2)))), pi(2, 1));
+pair(0, 0);
+pair(0, 1);
+pair(1, 0);
+pair(3, 4);
+
+// Inverting it: first find the diagonal w = x + y, the least w with
+// binom(w + 2, 2) > n. Then x = n -' binom(w + 1, 2) and y = w -' x.
+// (Since w <= n the search could be bounded, so the inverses are even
+// primitive recursive, as the lecture shows with the bounded max operator.)
+diagonal = |leq(binom2(s(s(pi(2, 1)))), pi(2, 2));
+unpair1 = sub(id, binom2(s(diagonal)));
+unpair2 = sub(diagonal, unpair1);
+
+unpair1(31);
+unpair2(31);
+pair(unpair1, unpair2)(31);        // round trip: n -> (x, y) -> n
+
+// Triples: pair3(x1, x2, x3) = pair(x1, pair(x2, x3))
+pair3 = pair(pi(3, 1), pair(pi(3, 2), pi(3, 3)));
+pair3(1, 2, 3);
+second = unpair1(unpair2);
+third = unpair2(unpair2);
+second(172);
+third(172);
+
+// --- Fibonacci with a pair as accumulator ----------------------------------
+// Primitive recursion carries only one value along, so we pack
+// (fib(n), fib(n+1)) into one number:
+//   fib_pair(0)   = pair(0, 1)
+//   fib_pair(n+1) = pair(b, a + b)    where (a, b) = unpair(fib_pair(n))
+fib_pair = rec(c(0, 1), pair(unpair2(pi(2, 1)), add(unpair1(pi(2, 1)), unpair2(pi(2, 1)))));
+fib = unpair1(fib_pair);
+fib(0);
+fib(1);
+fib(2);
+fib(7);
+fib(8);
