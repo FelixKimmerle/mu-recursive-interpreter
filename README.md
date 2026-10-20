@@ -253,7 +253,7 @@ absdiff = add(sub(pi(2, 1), pi(2, 2)), sub(pi(2, 2), pi(2, 1)));
 ### 5. Primitive recursion `rec(g, h)`
 
 Given $g : \mathbb{N}^k \to \mathbb{N}$ and $h : \mathbb{N}^{k+2} \to \mathbb{N}$, the
-function $f = \operatorname{rec}(g, h) : \mathbb{N}^{k+1} \to \mathbb{N}$ is
+function $f = \mathrm{rec}(g, h) : \mathbb{N}^{k+1} \to \mathbb{N}$ is
 
 $$
 \begin{aligned}
@@ -281,11 +281,11 @@ without recursion on the call stack:
 z := g(x);  FOR i := 0 TO n-1 DO z := h(z, i, x) END;  return z
 ```
 
-Example — addition, $\operatorname{add}(n, x) = n + x$:
+Example — addition, $\mathrm{add}(n, x) = n + x$:
 
 $$
-\operatorname{add}(0, x) = x = \pi^1_1(x), \qquad
-\operatorname{add}(n+1, x) = s(\operatorname{add}(n, x)) = (s \circ \pi^3_1)(z, n, x)
+\mathrm{add}(0, x) = x = \pi^1_1(x), \qquad
+\mathrm{add}(n+1, x) = s(\mathrm{add}(n, x)) = (s \circ \pi^3_1)(z, n, x)
 $$
 
 ```text
@@ -301,8 +301,8 @@ More examples (all in [`examples/prelude.pr`](examples/prelude.pr)):
 | $x \dot{-} n$ | $r(0,x)=x,\ r(n+1,x)=p(r(n,x))$ | `rec(pi(1, 1), pred(pi(3, 1)))` |
 | $n \cdot x$ | $m(0,x)=0,\ m(n+1,x)=x+m(n,x)$ | `rec(c(1, 0), add(pi(3, 3), pi(3, 1)))` |
 | $n!$ | $0!=1,\ (n+1)! = (n+1)\cdot n!$ | `rec(c(0, 1), mult(s(pi(2, 2)), pi(2, 1)))` |
-| $\operatorname{sg}$ | $\operatorname{sg}(0)=0,\ \operatorname{sg}(n+1)=1$ | `rec(c(0, 0), c(2, 1))` |
-| if-then-else | $\operatorname{cond}(0,x,y)=y,\ \operatorname{cond}(n+1,x,y)=x$ | `rec(pi(2, 2), pi(4, 3))` |
+| $\mathrm{sg}$ | $\mathrm{sg}(0)=0,\ \mathrm{sg}(n+1)=1$ | `rec(c(0, 0), c(2, 1))` |
+| if-then-else | $\mathrm{cond}(0,x,y)=y,\ \mathrm{cond}(n+1,x,y)=x$ | `rec(pi(2, 2), pi(4, 3))` |
 
 ($\dot{-}$ is the *modified difference* $x \dot{-} y = \max(x - y, 0)$.)
 
@@ -331,11 +331,11 @@ difference to primitive recursion: μ-recursive functions can be **partial**.
 
 A typical pattern is to compute the *inverse* of a monotone function. To find the
 least $n$ with property $P(n, \vec{x})$, write a function that is $0$ exactly when $P$
-holds. With $\operatorname{leq}(a, b) = 1$ iff $a \le b$ (else 0):
+holds. With $\mathrm{leq}(a, b) = 1$ iff $a \le b$ (else 0):
 
 $$
-x \operatorname{div} y = \mu n\,\big[\,(n+1)\cdot y > x\,\big]
-= \mu\big(\operatorname{leq}((n+1) \cdot y,\ x)\big)
+x \mathrm{div} y = \mu n\,\big[\,(n+1)\cdot y > x\,\big]
+= \mu\big(\mathrm{leq}((n+1) \cdot y,\ x)\big)
 $$
 
 ```text
