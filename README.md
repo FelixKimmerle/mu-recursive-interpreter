@@ -189,18 +189,18 @@ WHILE-computable (= Turing-computable) functions.
 
 ### 1. Successor `s`
 
-$$
+```math
 s : \mathbb{N} \to \mathbb{N}, \qquad s(x) = x + 1
-$$
+```
 
 The only basic function that produces something "new": every number is
 $s(s(\cdots s(0)))$. Example: `s(41);` → `42`.
 
 ### 2. Constants `c(k, n)`
 
-$$
+```math
 c^k_n : \mathbb{N}^k \to \mathbb{N}, \qquad c^k_n(x_1, \dots, x_k) = n
-$$
+```
 
 The constant function with value $n$ that ignores its $k$ arguments. The arity matters
 because composition and recursion require matching arities; e.g. the base case of
@@ -212,10 +212,10 @@ built-in is convenient.)
 
 ### 3. Projections `pi(k, i)`
 
-$$
+```math
 \pi^k_i : \mathbb{N}^k \to \mathbb{N}, \qquad \pi^k_i(x_1, \dots, x_k) = x_i
 \qquad (1 \le i \le k)
-$$
+```
 
 Projections select one argument. Together with composition they let you reorder,
 duplicate and drop arguments (the lecture's "Vertauschen", "Identifikation" and
@@ -234,10 +234,10 @@ drop(x, y)  = f(x)         → f(pi(2, 1))
 Given $f : \mathbb{N}^m \to \mathbb{N}$ and $g_1, \dots, g_m : \mathbb{N}^k \to \mathbb{N}$
 (*all with the same arity $k$*):
 
-$$
+```math
 f \circ (g_1, \dots, g_m) : \mathbb{N}^k \to \mathbb{N}, \qquad
-\vec{x} \mapsto f\big(g_1(\vec{x}), \dots, g_m(\vec{x})\big)
-$$
+\vec{x} \mapsto f(g_1(\vec{x}), \dots, g_m(\vec{x}))
+```
 
 This is the lecture's *Einsetzen*. Each $g_i$ receives the full argument vector
 $\vec{x}$, so the $g_i$ typically are projections or built from projections:
@@ -255,12 +255,12 @@ absdiff = add(sub(pi(2, 1), pi(2, 2)), sub(pi(2, 2), pi(2, 1)));
 Given $g : \mathbb{N}^k \to \mathbb{N}$ and $h : \mathbb{N}^{k+2} \to \mathbb{N}$, the
 function $f = \mathrm{rec}(g, h) : \mathbb{N}^{k+1} \to \mathbb{N}$ is
 
-$$
+```math
 \begin{aligned}
 f(0, \vec{x})     &= g(\vec{x}) \\
-f(n + 1, \vec{x}) &= h\big(f(n, \vec{x}),\ n,\ \vec{x}\big)
+f(n + 1, \vec{x}) &= h(f(n, \vec{x}),\ n,\ \vec{x})
 \end{aligned}
-$$
+```
 
 The recursion runs over the **first** argument. The step function $h$ receives, in
 this order: the previous value $z = f(n, \vec{x})$, the counter $n$, and the remaining
@@ -283,10 +283,10 @@ z := g(x);  FOR i := 0 TO n-1 DO z := h(z, i, x) END;  return z
 
 Example — addition, $\mathrm{add}(n, x) = n + x$:
 
-$$
+```math
 \mathrm{add}(0, x) = x = \pi^1_1(x), \qquad
 \mathrm{add}(n+1, x) = s(\mathrm{add}(n, x)) = (s \circ \pi^3_1)(z, n, x)
-$$
+```
 
 ```text
 add = rec(pi(1, 1), s(pi(3, 1)));
@@ -311,10 +311,10 @@ More examples (all in [`examples/prelude.pr`](examples/prelude.pr)):
 Given $f : \mathbb{N}^{k+1} \to \mathbb{N}$, the function
 $\mu f : \mathbb{N}^k \to \mathbb{N}$ is
 
-$$
-\mu f(\vec{x}) = \min\big\{\, n \in \mathbb{N} \ \big|\ f(n, \vec{x}) = 0
-\ \wedge\ \forall m < n : f(m, \vec{x}) \text{ is defined and } > 0 \,\big\}
-$$
+```math
+\mu f(\vec{x}) = \min \lbrace n \in \mathbb{N} \mid f(n, \vec{x}) = 0
+\ \wedge\ \forall m < n : f(m, \vec{x}) \text{ is defined and } > 0 \rbrace
+```
 
 and **undefined** if no such $n$ exists. It searches over the **first** argument of
 $f$ — like a `WHILE` loop: $n := 0$; while $f(n, \vec x) \ne 0$ do $n := n + 1$.
@@ -333,10 +333,10 @@ A typical pattern is to compute the *inverse* of a monotone function. To find th
 least $n$ with property $P(n, \vec{x})$, write a function that is $0$ exactly when $P$
 holds. With $\mathrm{leq}(a, b) = 1$ iff $a \le b$ (else 0):
 
-$$
-x \mathrm{div} y = \mu n\,\big[\,(n+1)\cdot y > x\,\big]
-= \mu\big(\mathrm{leq}((n+1) \cdot y,\ x)\big)
-$$
+```math
+x \ \mathrm{div}\ y = \mu n \left[ (n+1)\cdot y > x \right]
+= \mu(\mathrm{leq}((n+1) \cdot y,\ x))
+```
 
 ```text
 mu_div = |leq(mult(s(pi(3, 1)), pi(3, 3)), pi(3, 2));
@@ -371,7 +371,7 @@ $p$ and $q$.
 
 A few highlights:
 
-**Integer square root.** $\lfloor\sqrt{x}\rfloor = \mu n\,[(n+1)^2 > x]$
+**Integer square root.** $\lfloor\sqrt{x}\rfloor = \mu n \ [(n+1)^2 > x]$
 
 ```text
 square = mult(id, id);
